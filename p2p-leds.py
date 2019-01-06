@@ -8,7 +8,7 @@ LOCAL_BUTTON_PIN = 35 #GPIO19
 LOCAL_IP = 'localhost'
 LOCAL_PORT = 10000
 REMOTE_LED_PIN = 13 #GPIO27
-REMOTE_IP = '192.168.1.158'
+REMOTE_IP = '192.168.1.158'#'73.128.178.46'
 REMOTE_PORT = 10000
 SLEEP_SEC = 0.2
 
@@ -35,20 +35,27 @@ def on_network_callback(event, node, other, data):
         remote_button_pressed = data.value
 
 # SETUP P2P NETWORK
-node = Node(LOCAL_IP, LOCAL_PORT, on_network_callback)
-node.start()
-node.connect_with_node(REMOTE_IP, REMOTE_PORT)
+def setup_node():
+    global node
+    node = Node(LOCAL_IP, LOCAL_PORT, on_network_callback)
+    node.start()
+    node.connect_with_node(REMOTE_IP, REMOTE_PORT)
+setup_node()
 
 def button_press(pin):
     GPIO.output(LOCAL_LED_PIN, not GPIO.input(pin))
-    node.send_to_nodes({ "value": not GPIO.input(pin) })
+    try:
+        node.send_to_nodes({ "value": not GPIO.input(pin) })
+    except:
+        setup_node()
+        pass
 
 GPIO.add_event_detect(LOCAL_BUTTON_PIN, GPIO.BOTH, callback=button_press)
 
 # MAIN LOOP
 try:
     while (1):
-        time.sleep(1e6)
+        time.sleep(1)
 
 finally:
     GPIO.cleanup()
