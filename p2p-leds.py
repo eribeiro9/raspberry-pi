@@ -22,8 +22,8 @@ local_button = Button(LOCAL_BUTTON_PIN)
 remote_led = LED(REMOTE_LED_PIN)
 
 # TODO: NETWORK CALLBACK
-def on_network_callback:
-    # HANDLE EVENT
+def on_network_callback(event, node, other, data):
+    print("Event Node 1 (" + node.id + "): %s: %s" % (event, data))
 
 # SETUP P2P NETWORK
 node = Node(LOCAL_IP, LOCAL_PORT, on_network_callback)
@@ -35,9 +35,10 @@ while (1):
     # HANDLE LOCAL LED
     if (local_button.is_pressed):
         local_led.on()
-        # TODO: SEND NETWORK
+        node.send_to_nodes({"type": "message", "message": True})
     else:
         local_led.off()
+        node.send_to_nodes({"type": "message", "message": False})
     
     # HANDLE REMOTE LED
     if (remote_button_pressed):
