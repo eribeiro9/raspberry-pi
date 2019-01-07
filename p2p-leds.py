@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 import socket, _thread
-
+  
 # CONFIG
 LOCAL_LED_PIN = 11 #GPIO17
 LOCAL_BUTTON_PIN = 35 #GPIO19
@@ -23,7 +23,7 @@ def button_press(pin):
     global connected_to_remote, client
     GPIO.output(LOCAL_LED_PIN, not GPIO.input(pin))
     if connected_to_remote:
-        client.sendall(bytes(not GPIO.input(pin)))
+        client.sendall(bytes([not GPIO.input(pin)]))
 
 GPIO.add_event_detect(LOCAL_BUTTON_PIN, GPIO.BOTH, callback=button_press)
 
