@@ -1,12 +1,12 @@
 import RPi.GPIO as GPIO
-import socket, _thread, time
+import socket, _thread
 
 # CONFIG
 LOCAL_LED_PIN = 11 #GPIO17
 LOCAL_BUTTON_PIN = 35 #GPIO19
 LOCAL_PORT = 10000
 REMOTE_LED_PIN = 13 #GPIO27
-REMOTE_IP = '192.168.1.158'#'192.168.1.158'#'73.128.178.46'
+REMOTE_IP = '192.168.1.158'#'192.168.1.158'#'73.128.178.46'#'47.205.79.97'
 REMOTE_PORT = 10000
 
 # VARIABLES
@@ -56,15 +56,15 @@ while 1:
             data = remote.recv(1024)
 
             if not data: break
-
-            print('Client Says', data)
+            
+            value = int.from_bytes(data, byteorder='big')
+            print('Client Says', value)
+            
+            GPIO.output(REMOTE_LED_PIN, value == 1)
 
     except socket.error:
         print('Error Occured.')
         break
-    
-    finally:
-        time.sleep(1e6)
 
-conn.close()
+remote.close()
 GPIO.cleanup()
