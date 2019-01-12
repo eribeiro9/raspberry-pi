@@ -1,12 +1,13 @@
 import RPi.GPIO as GPIO
-import socket, _thread
+import socket
+from threading import Thread
   
 # CONFIG
 LOCAL_LED_PIN = 11 #GPIO17
 LOCAL_BUTTON_PIN = 35 #GPIO19
 LOCAL_PORT = 10000
 REMOTE_LED_PIN = 13 #GPIO27
-REMOTE_IP = '192.168.1.158'#'192.168.1.158'#'73.128.178.46'#'47.205.79.97'
+REMOTE_IP = '73.128.178.46'#'192.168.1.158'#'73.128.178.46'#'47.205.79.97'
 REMOTE_PORT = 10000
 
 # VARIABLES
@@ -37,7 +38,9 @@ def create_server():
     print('Connected', addr)
     connection_from_remote = True
     
-_thread.start_new_thread(create_server, ())
+thread = Thread(target = create_server, args = ())
+thread.start()
+thread.join()
 
 # START CONNECTION TO REMOTE
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
